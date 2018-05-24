@@ -269,8 +269,20 @@
         [self.commandDelegate sendPluginResult: rslt callbackId: command.callbackId];
         return;
     }
-    NSURL *reqUrl = [NSURL URLWithString: [NSString stringWithFormat:@"https://%@:%@%@", [options objectForKey:@"host"], [options objectForKey:@"port"], [options objectForKey:@"path"]]];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:reqUrl cachePolicy: NSURLRequestReloadIgnoringCacheData timeoutInterval: 20.0];
+    NSURL *reqUrl;
+    if ([[options objectForKey:@"port"] integerValue] == 80) {
+        reqUrl = [NSURL URLWithString: [NSString stringWithFormat:@"http://%@:%@%@", [options objectForKey:@"host"], [options objectForKey:@"port"], [options objectForKey:@"path"]]];
+    }
+    else {
+        reqUrl = [NSURL URLWithString: [NSString stringWithFormat:@"https://%@:%@%@", [options objectForKey:@"host"], [options objectForKey:@"port"], [options objectForKey:@"path"]]];
+    }
+    NSNumber *timeoutNumber = [options objectForKey:@"timeout"];
+    NSTimeInterval timeout = 20.0;
+    if (timeoutNumber != nil) {
+        timeout = [timeoutNumber doubleValue] / 1000;
+    }
+
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:reqUrl cachePolicy: NSURLRequestReloadIgnoringCacheData timeoutInterval: timeout];
     req.HTTPMethod = [method uppercaseString];
 	[req setValue: @"close" forHTTPHeaderField: @"Connection"];
 	[req setValue: @"utf-8" forHTTPHeaderField: @"Accept-Charset"];
