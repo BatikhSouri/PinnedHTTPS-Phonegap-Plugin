@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-pinnedhttps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Cordova plugin allowing you to make https requests, with (fingerprint-based) certificate pinning",
   "main": "index.js",
   "cordova": {
